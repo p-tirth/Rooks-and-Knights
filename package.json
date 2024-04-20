@@ -12,7 +12,8 @@
     "chess.js": "^1.0.0-beta.8",
     "chessboardjsx": "^2.4.7",
     "next": "14.2.1",
-    "react": "^18"
+    "react": "^18",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "eslint": "^8",
