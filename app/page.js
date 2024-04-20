@@ -1,17 +1,29 @@
-"use client"
+"use client";
 
-import { useState } from "react";
+import React from "react";
+import Chessboard from "chessboardjsx";
 import { Chess } from "chess.js";
-import { Chessboard } from "react-chessboard";
 
 export default function Home() {
-	const chess = new Chess()
+	const [position, setPosition] = React.useState(
+		"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+	);
+	const chess = new Chess(position);
 
-	
-	while (!chess.isGameOver()) {
-	  const moves = chess.moves()
-	  const move = moves[Math.floor(Math.random() * moves.length)]
-	  chess.move(move)
-	}
-	console.log(chess.pgn())
+	const handleClick = (square) => {
+		const move = chess.move({
+			from: square,
+			to: square,
+		});
+
+		if (move) {
+			setPosition(chess.fen());
+		}
+	};
+
+	return (
+		<div>
+			<Chessboard position={position} onClick={handleClick} />
+		</div>
+	);
 }
