@@ -4,10 +4,10 @@ import io from "socket.io-client";
 
 const socket = io.connect("http://localhost:3001");
 
-export function sendMove(opponentId, currentMove) {
+export function sendMove(opponentId, move) {
   const data = {
     opponentId: opponentId,
-    move: currentMove,
+    move: move,
   };
   socket.emit("sendMove", data);
   console.log("Move Sent : ", data.move);
@@ -20,21 +20,36 @@ export function findMatch(matchQueued, setmatchQueued) {
   setmatchQueued(true);
 }
 
-export function useSocket() {
+export function useSocket(handleOppoMove) {
   const [opponentId, setOpponentId] = useState("");
-  const [currentMove, setCurrentMove] = useState("");
-  const [opponentMove, setOpponentMove] = useState("");
+  const [turn, setTurn] = useState(false);
+  const [userMove, setUserMove] = useState("false");
+  const [color, setcolor] = useState("");
+  const [board, setboard] = useState(false);
   const [matchQueued, setmatchQueued] = useState(false);
+  const [userMsg,setUserMsg] = useState("")
+  const [opponentMsg,setOpponentMsg] = useState("")
+  
+  const sendMsg = (userMsg) => {
+    socket.emit("sendMsg",userMsg)
+  }
 
   useEffect(() => {
     socket.on("matchFound", (data) => {
       console.log("Match Found : ", data);
+      setcolor(data.side);
+      if (data.side === "white") setTurn(true);
+      setboard(true);
       setOpponentId(data.opponent);
     });
     socket.on("opponentMove", (data) => {
       console.log("Opponent Move : ", data.move);
-      setOpponentMove(data.move);
+      setTurn(true)
+      handleOppoMove(data.move);
     });
+    socket.on("userMsg",(data) => {
+      setUserMsg(data)
+    })
 
     return () => {
       // Clean up socket listeners
@@ -45,26 +60,17 @@ export function useSocket() {
 
   return {
     opponentId,
-    currentMove,
+    userMove,
+    //opponentMove,
+    board,
+    color,
     matchQueued,
-    setCurrentMove,
+    turn,
+    setTurn,
+    setUserMove,
+    //setOpponentMove,
+    sendMsg:() => sendMsg(userMsg),
     findMatch: () => findMatch(matchQueued, setmatchQueued),
-    sendMove: () => sendMove(opponentId, currentMove),
+    sendMove: (move) => sendMove(opponentId, move),
   };
-}
-
-export default function Page() {
-  const { opponentId, currentMove, matchQueued, setCurrentMove, findMatch } = useSocket();
-
-  return (
-    <div>
-      <h1>Socket Connection Page</h1>
-      <p>Opponent ID: {opponentId}</p>
-      <p>Current Move: {currentMove}</p>
-      <button onClick={findMatch} disabled={matchQueued}>
-        Find Match
-      </button>
-      <button onClick={() => sendMove(opponentId, currentMove)}>Send Move</button>
-    </div>
-  );
 }
