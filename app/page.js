@@ -29,7 +29,7 @@ export default function Home() {
                   alt="Logo"
                 />
               </div>
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <div className="hidden sm:ml-6 sm:flex sm:justify-center sm:items-center sm:space-x-8 ">
                 <Link href="/">
                   <p className="text-gray-300 hover:text-white cursor-pointer">
                     Home
@@ -47,7 +47,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-              <div>
+              <div className="sm:flex sm:justify-center sm:items-center">
                 <Link href="/game" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   Start
                 </Link>
