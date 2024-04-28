@@ -6,7 +6,6 @@ import { Chess } from "chess.js";
 import io from "socket.io-client";
 import { useSocket } from "../components/socket";
 
-const socket = io.connect("http://localhost:3001");
 
 const App = () => {
   const handleOppoMove = (move) => {
@@ -40,6 +39,7 @@ const App = () => {
     if (chess.move(move)) {
       setFen(chess.fen());
     }
+    console.log("move handled")
     setUserMove(move);
     setTurn(false);
     sendMove(move);
@@ -71,7 +71,7 @@ const App = () => {
           }
           orientation={color}
           dropOffBoard={"snapback"}
-          draggable={turn}
+          // draggable={turn}
         />
       )}
 <div className="flex items-center justify-between p-4 border-t border-gray-200">
