@@ -21,9 +21,11 @@ const App = () => {
     color,
     matchQueued,
     turn,
+    userMsg,
     setTurn,
     setUserMove,
     sendMsg,
+    setUserMsg,
     findMatch,
     sendMove,
   } = useSocket(handleOppoMove);
@@ -76,14 +78,14 @@ const App = () => {
     type="text"
     placeholder="Hey..."
     className="w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-    value={msg}
-    onChange={(e) => setMsg(e.target.value)}
+    value={userMsg}
+    onChange={(e) => setUserMsg(e.target.value)}
   />
   <button
     className={`ml-2 px-4 py-2 rounded-md focus:outline-none ${
       color ? 'bg-green-500 text-white' : 'bg-red-500 text-white hover:bg-red-600 focus:bg-red-600'
     }`}
-    onClick={color ? sendMsg(msg) : findMatch}
+    onClick={color ? sendMsg(userMsg) : findMatch}
   >
     {color ? 'Send' : 'Find Match'}
   </button>
