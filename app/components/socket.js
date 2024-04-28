@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const socket = io.connect("http://localhost:3001");
+const socket = io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com");
 
 export function sendMove(opponentId, move) {
   const data = {
