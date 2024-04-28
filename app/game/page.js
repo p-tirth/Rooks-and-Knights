@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
-// import Chessboard from "chessboardjsx";
-const { Chess } = require("chess.js");
+import Chessboard from "chessboardjsx";
+// const { Chess } = require("chess.js");
+import { Chess } from "chess.js";
 import io from "socket.io-client";
 import { useSocket } from "../components/socket";
 
@@ -53,7 +54,7 @@ const App = () => {
   //     setFen(chess.fen());
   //   }
   // };
-  const Chessboard = React.lazy(() => import("chessboardjsx"));
+  // const Chessboard = React.lazy(() => import("chessboardjsx"));
   return (
     <div className="flex-center">
       <div>opponentId : {opponentId}</div>
