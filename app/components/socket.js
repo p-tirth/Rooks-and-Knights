@@ -2,25 +2,10 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const socket = io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com");
-
-export function sendMove(opponentId, move) {
-  const data = {
-    opponentId: opponentId,
-    move: move,
-  };
-  socket.emit("sendMove", data);
-  console.log("Move Sent : ", data.move);
-}
-
-export function findMatch(matchQueued, setmatchQueued) {
-  if (matchQueued) return;
-  console.log("finding match for : ", socket.id);
-  socket.emit("findMatch");
-  setmatchQueued(true);
-}
+// const socket = io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com");
 
 export function useSocket(handleOppoMove) {
+  const [socket,setSocket] = useState(io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com") )
   const [opponentId, setOpponentId] = useState("");
   const [turn, setTurn] = useState(false);
   const [userMove, setUserMove] = useState("false");
@@ -30,7 +15,7 @@ export function useSocket(handleOppoMove) {
   const [userMsg,setUserMsg] = useState("")
   const [opponentMsg,setOpponentMsg] = useState("")
   
-  const sendMsg = (userMsg) => {
+  const sendMsg = (userMsg,socket) => {
     socket.emit("sendMsg",userMsg)
   }
 
@@ -66,13 +51,32 @@ export function useSocket(handleOppoMove) {
     color,
     matchQueued,
     turn,
+    socket,
     userMsg,
     setTurn,
     setUserMove,
     setUserMsg,
     //setOpponentMove,
-    sendMsg:() => sendMsg(userMsg),
-    findMatch: () => findMatch(matchQueued, setmatchQueued),
-    sendMove: (move) => sendMove(opponentId, move),
+    sendMsg:() => sendMsg(userMsg,socket),
+    findMatch: () => findMatch(matchQueued, setmatchQueued,socket),
+    sendMove: (move) => sendMove(opponentId, move,socket),
   };
 }
+
+export function sendMove(opponentId, move,socket) {
+  const data = {
+    opponentId: opponentId,
+    move: move,
+  };
+  socket.emit("sendMove", data);
+  console.log("Move Sent : ", data.move);
+}
+
+export function findMatch(matchQueued, setmatchQueued,socket) {
+  if (matchQueued) return;
+  console.log("finding match for : ", socket.id);
+  socket.emit("findMatch");
+  setmatchQueued(true);
+}
+
+

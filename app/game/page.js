@@ -8,7 +8,7 @@ import { useSocket } from "../components/socket";
 
 
 const App = () => {
-  const handleOppoMove = (move) => {
+  const handleOppoMove = (move,socket) => {
     if (chess.move(move)) {
       setFen(chess.fen());
     } else {
@@ -21,6 +21,7 @@ const App = () => {
     color,
     matchQueued,
     turn,
+    socket,
     userMsg,
     setTurn,
     setUserMove,
@@ -35,14 +36,14 @@ const App = () => {
   );
   const [fen, setFen] = useState(chess.fen());
 
-  const handleMove = (move) => {
+  const handleMove = (move,socket) => {
     if (chess.move(move)) {
       setFen(chess.fen());
     }
     console.log("move handled")
     setUserMove(move);
     setTurn(false);
-    sendMove(move);
+    sendMove(move,socket);
   };
 
   // const RandomMove = () => {
@@ -71,7 +72,7 @@ const App = () => {
           }
           orientation={color}
           dropOffBoard={"snapback"}
-          // draggable={turn}
+          draggable={turn}
         />
       )}
 <div className="flex items-center justify-between p-4 border-t border-gray-200">
@@ -86,7 +87,7 @@ const App = () => {
     className={`ml-2 px-4 py-2 rounded-md focus:outline-none ${
       color ? 'bg-green-500 text-white' : 'bg-red-500 text-white hover:bg-red-600 focus:bg-red-600'
     }`}
-    onClick={color ? sendMsg(userMsg) : findMatch}
+    onClick={color ? sendMsg(userMsg) : findMatch(socket)}
   >
     {color ? 'Send' : 'Find Match'}
   </button>
