@@ -73,6 +73,7 @@ export function sendMove(opponentId, move,socket) {
 }
 
 export function findMatch(matchQueued, setmatchQueued,socket) {
+  console.log("clicked")
   if (matchQueued) return;
   console.log("finding match for : ", socket.id);
   socket.emit("findMatch");
