@@ -5,8 +5,10 @@ import io from "socket.io-client";
 // const socket = io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com");
 
 export function useSocket(handleOppoMove) {
-  const [socket,setSocket] = useState(io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com") )
+  const [socket,setSocket] = useState(io.connect("http://localhost:3001/") )
   const [opponentId, setOpponentId] = useState("");
+  const [opponentName, setOpponentName] = useState("");
+  const [userName, setUserName] = useState("");
   const [turn, setTurn] = useState(false);
   const [userMove, setUserMove] = useState("false");
   const [color, setcolor] = useState("");
@@ -26,6 +28,7 @@ export function useSocket(handleOppoMove) {
       if (data.side === "white") setTurn(true);
       setboard(true);
       setOpponentId(data.opponent);
+      setOpponentName(data.opponentName);
     });
     socket.on("opponentMove", (data) => {
       console.log("Opponent Move : ", data.move);
@@ -45,6 +48,8 @@ export function useSocket(handleOppoMove) {
 
   return {
     opponentId,
+    opponentName,
+    userName,
     userMove,
     //opponentMove,
     board,
@@ -56,9 +61,10 @@ export function useSocket(handleOppoMove) {
     setTurn,
     setUserMove,
     setUserMsg,
+    setUserName,
     //setOpponentMove,
     sendMsg:() => sendMsg(userMsg,socket),
-    findMatch: () => findMatch(matchQueued, setmatchQueued,socket),
+    findMatch: () => findMatch(matchQueued, setmatchQueued,socket,userName),
     sendMove: (move) => sendMove(opponentId, move,socket),
   };
 }
@@ -72,11 +78,12 @@ export function sendMove(opponentId, move,socket) {
   console.log("Move Sent : ", data.move);
 }
 
-export function findMatch(matchQueued, setmatchQueued,socket) {
+export function findMatch(matchQueued, setmatchQueued,socket,name) {
   console.log("clicked")
   if (matchQueued) return;
+  if(name === ""){alert("Please Enter Your Name"); return};
   console.log("finding match for : ", socket.id);
-  socket.emit("findMatch");
+  socket.emit("findMatch",name);
   setmatchQueued(true);
 }
 

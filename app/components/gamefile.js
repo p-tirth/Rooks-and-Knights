@@ -16,6 +16,8 @@ const Gamefile = () => {
   };
   const {
     opponentId,
+    opponentName,
+    userName,
     board,
     color,
     matchQueued,
@@ -26,6 +28,7 @@ const Gamefile = () => {
     setUserMove,
     sendMsg,
     setUserMsg,
+    setUserName,
     findMatch,
     sendMove,
   } = useSocket(handleOppoMove);
@@ -80,8 +83,8 @@ const Gamefile = () => {
   // };
   // const Chessboard = React.lazy(() => import("chessboardjsx"));
   return (
-    <div className="flex-center bg-gray-900">
-      <div>opponentId : {opponentId}</div>
+    <div className="flex-center bg-gray-900 ">
+      <div className="font-mono text-xl p-5 text-white">You are playing against  : {opponentName}</div>
       {board && (
         <Chessboard
           width={400}
@@ -101,10 +104,10 @@ const Gamefile = () => {
       <div className="flex items-center justify-between p-4 border-t border-gray-200">
         <input
           type="text"
-          placeholder="Hey..."
+          placeholder={`${!matchQueued?"Enter Your Name":"Enter Your Message"}`}
           className="w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-          value={userMsg}
-          onChange={(e) => setUserMsg(e.target.value)}
+          value={`${!matchQueued? userName:userMsg}`}
+          onChange={(e) => !matchQueued? setUserName(e.target.value):setUserMsg(e.target.value)}
         />
         <button
           className={`ml-2 px-4 py-2 rounded-md focus:outline-none ${
