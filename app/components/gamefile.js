@@ -3,14 +3,16 @@ import React, { useState } from "react";
 import Chessboard from "chessboardjsx";
 import { Chess } from "chess.js";
 import { useSocket } from "./socket";
+import { Coming_Soon } from "next/font/google";
 
 const Gamefile = () => {
-  const handleOppoMove = (move, socket) => {
+  const handleOppoMove = (move) => {
     if (chess.move(move)) {
       setFen(chess.fen());
     } else {
       console.log("Invalid Move");
     }
+    checkGameStatus(chess,color,turn);
   };
   const {
     opponentId,
@@ -33,25 +35,41 @@ const Gamefile = () => {
   );
   const [fen, setFen] = useState(chess.fen());
 
-  const handleMove = (move, socket) => {
-    try{
-      const result = chess.move(move);
-      if(result===null){
-        throw new Error("Invalid Move");
+  const checkGameStatus = (chess,color) => {
+    // check all game end conditions
+     if (chess.isCheckmate()) {
+      alert("Checkmate");
+      if(turn){
+        alert("You Win")
+      }else{
+        alert("You Loose")
       }
-      else{
+    } else if (chess.isDraw()) {
+      alert("Stalemate");
+    } else if (chess.inCheck()) {
+      alert("Check");
+    } 
+  };
+
+  const handleMove = (move, socket) => {
+    try {
+      const result = chess.move(move);
+      if (result === null) {
+        throw new Error("Invalid Move");
+      } else {
         setFen(chess.fen());
       }
       console.log("move handled");
       setUserMove(move);
       setTurn(false);
       sendMove(move, socket);
-    }catch(error){
+      checkGameStatus(chess,color);
+    } catch (error) {
       alert("Invalid Move");
     }
-  }
-    
-    // const RandomMove = () => {
+  };
+
+  // const RandomMove = () => {
   //   const moves = chess.moves();
   //   if (moves.length > 0) {
   //     const computerMove = moves[Math.floor(Math.random() * moves.length)];
