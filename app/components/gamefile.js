@@ -80,7 +80,7 @@ const Gamefile = () => {
   // };
   // const Chessboard = React.lazy(() => import("chessboardjsx"));
   return (
-    <div className="flex-center">
+    <div className="flex-center bg-gray-900">
       <div>opponentId : {opponentId}</div>
       {board && (
         <Chessboard
