@@ -9,7 +9,6 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <Navbar/>
       {/* Main Content */}
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
@@ -49,13 +48,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 py-4 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2024 ChessMaster. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 }
