@@ -5,7 +5,7 @@ import io from "socket.io-client";
 // const socket = io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com");
 
 export function useSocket(handleOppoMove) {
-  const [socket,setSocket] = useState(io.connect("http://localhost:3001/") )
+  const [socket,setSocket] = useState(io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com") )
   const [opponentId, setOpponentId] = useState("");
   const [opponentName, setOpponentName] = useState("");
   const [userName, setUserName] = useState("");
