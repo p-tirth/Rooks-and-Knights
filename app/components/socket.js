@@ -14,6 +14,7 @@ export function useSocket(handleOppoMove) {
   const [color, setcolor] = useState("");
   const [board, setboard] = useState(false);
   const [matchQueued, setmatchQueued] = useState(false);
+  const [matchFound, setmatchFound] = useState(false);
   const [userMsg,setUserMsg] = useState("")
   const [opponentMsg,setOpponentMsg] = useState("")
   
@@ -23,6 +24,7 @@ export function useSocket(handleOppoMove) {
 
   useEffect(() => {
     socket.on("matchFound", (data) => {
+      setmatchFound(true);
       console.log("Match Found : ", data);
       setcolor(data.side);
       if (data.side === "white") setTurn(true);
@@ -55,6 +57,7 @@ export function useSocket(handleOppoMove) {
     board,
     color,
     matchQueued,
+    matchFound,
     turn,
     socket,
     userMsg,

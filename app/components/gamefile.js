@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import Chessboard from "chessboardjsx";
 import { Chess } from "chess.js";
 import { useSocket } from "./socket";
-import { Coming_Soon } from "next/font/google";
+import Image from "next/image";
+import Loading from "./loading";
 
 const Gamefile = () => {
   const handleOppoMove = (move) => {
@@ -12,7 +13,7 @@ const Gamefile = () => {
     } else {
       console.log("Invalid Move");
     }
-    checkGameStatus(chess,color,turn);
+    checkGameStatus(chess, color, turn);
   };
   const {
     opponentId,
@@ -21,6 +22,7 @@ const Gamefile = () => {
     board,
     color,
     matchQueued,
+    matchFound,
     turn,
     socket,
     userMsg,
@@ -38,20 +40,20 @@ const Gamefile = () => {
   );
   const [fen, setFen] = useState(chess.fen());
 
-  const checkGameStatus = (chess,color) => {
+  const checkGameStatus = (chess, color) => {
     // check all game end conditions
-     if (chess.isCheckmate()) {
+    if (chess.isCheckmate()) {
       alert("Checkmate");
-      if(turn){
-        alert("You Win")
-      }else{
-        alert("You Loose")
+      if (turn) {
+        alert("You Win");
+      } else {
+        alert("You Loose");
       }
     } else if (chess.isDraw()) {
       alert("Stalemate");
     } else if (chess.inCheck()) {
       alert("Check");
-    } 
+    }
   };
 
   const handleMove = (move, socket) => {
@@ -66,7 +68,7 @@ const Gamefile = () => {
       setUserMove(move);
       setTurn(false);
       sendMove(move, socket);
-      checkGameStatus(chess,color);
+      checkGameStatus(chess, color);
     } catch (error) {
       alert("Invalid Move");
     }
@@ -84,7 +86,11 @@ const Gamefile = () => {
   // const Chessboard = React.lazy(() => import("chessboardjsx"));
   return (
     <div className="flex-center bg-gray-900 ">
-      <div className="font-mono text-xl p-5 text-white">You are playing against  : {opponentName}</div>
+      {opponentName && (
+        <div className="font-mono text-xl p-5 text-white">
+          You are playing against : {opponentName}
+        </div>
+      )}
       {board && (
         <Chessboard
           width={400}
@@ -104,10 +110,16 @@ const Gamefile = () => {
       <div className="flex items-center justify-between p-4 border-t border-gray-200">
         <input
           type="text"
-          placeholder={`${!matchQueued?"Enter Your Name":"Enter Your Message"}`}
+          placeholder={`${
+            !matchQueued ? "Enter Your Name" : "Enter Your Message"
+          }`}
           className="w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-          value={`${!matchQueued? userName:userMsg}`}
-          onChange={(e) => !matchQueued? setUserName(e.target.value):setUserMsg(e.target.value)}
+          value={`${!matchQueued ? userName : userMsg}`}
+          onChange={(e) =>
+            !matchQueued
+              ? setUserName(e.target.value)
+              : setUserMsg(e.target.value)
+          }
         />
         <button
           className={`ml-2 px-4 py-2 rounded-md focus:outline-none ${
@@ -126,6 +138,12 @@ const Gamefile = () => {
           {color ? "Send" : "Find Match"}
         </button>
       </div>
+      {matchQueued && !matchFound && (
+        <div className="w-full flex flex-col items-center">
+          <Loading />
+          <div className="text-white p-3">Searchig opponent for {userName}</div>
+        </div>
+      )}
     </div>
   );
 };
