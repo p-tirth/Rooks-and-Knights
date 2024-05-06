@@ -87,8 +87,17 @@ const Gamefile = () => {
   return (
     <div className="flex-center bg-gray-900 ">
       {opponentName && (
-        <div className="font-mono text-xl p-5 text-white">
-          You are playing against : {opponentName}
+        <div>
+          <div className="font-mono text-xl p-5 text-white">
+            You are playing against : {opponentName}
+          </div>
+          <div className={`${
+            turn
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white "
+          }`}>
+            turn
+          </div>
         </div>
       )}
       {board && (
