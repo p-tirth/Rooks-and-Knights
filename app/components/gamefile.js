@@ -26,6 +26,7 @@ const Gamefile = () => {
     turn,
     socket,
     userMsg,
+    opponentMsg,
     setTurn,
     setUserMove,
     sendMsg,
@@ -91,31 +92,38 @@ const Gamefile = () => {
           <div className="font-mono text-xl p-5 text-white">
             You are playing against : {opponentName}
           </div>
-          <div className={`${
-            turn
-              ? "bg-green-500 text-white"
-              : "bg-red-500 text-white "
-          }`}>
+          <div
+            className={`${
+              turn ? "bg-green-500 text-white" : "bg-red-500 text-white "
+            }`}
+          >
             turn
           </div>
         </div>
       )}
-      {board && (
-        <Chessboard
-          width={400}
-          position={fen}
-          onDrop={(move) =>
-            handleMove({
-              from: move.sourceSquare,
-              to: move.targetSquare,
-              promotion: "q",
-            })
-          }
-          orientation={color}
-          dropOffBoard={"snapback"}
-          draggable={turn}
-        />
-      )}
+      <div className="flex flex-wrap justify-evenly">
+        <div>
+          {board && (
+            <Chessboard
+              width={400}
+              position={fen}
+              onDrop={(move) =>
+                handleMove({
+                  from: move.sourceSquare,
+                  to: move.targetSquare,
+                  promotion: "q",
+                })
+              }
+              orientation={color}
+              dropOffBoard={"snapback"}
+              draggable={turn}
+            />
+          )}
+        </div>
+        <div className="bg-gray-800">
+          {opponentMsg}
+        </div>
+      </div>
       <div className="flex items-center justify-between p-4 border-t border-gray-200">
         <input
           type="text"
@@ -138,7 +146,9 @@ const Gamefile = () => {
           }`}
           onClick={
             color
-              ? sendMsg(userMsg)
+              ? () => {
+                  sendMsg(userMsg);
+                }
               : () => {
                   findMatch(socket);
                 }

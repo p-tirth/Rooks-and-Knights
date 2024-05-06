@@ -5,7 +5,8 @@ import io from "socket.io-client";
 // const socket = io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com");
 
 export function useSocket(handleOppoMove) {
-  const [socket,setSocket] = useState(io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com") )
+  // const [socket,setSocket] = useState(io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com") )
+  const [socket,setSocket] = useState(io.connect("http://localhost:3001/") )
   const [opponentId, setOpponentId] = useState("");
   const [opponentName, setOpponentName] = useState("");
   const [userName, setUserName] = useState("");
@@ -18,10 +19,6 @@ export function useSocket(handleOppoMove) {
   const [userMsg,setUserMsg] = useState("")
   const [opponentMsg,setOpponentMsg] = useState("")
   
-  const sendMsg = (userMsg,socket) => {
-    socket.emit("sendMsg",userMsg)
-  }
-
   useEffect(() => {
     socket.on("matchFound", (data) => {
       setmatchFound(true);
@@ -39,6 +36,10 @@ export function useSocket(handleOppoMove) {
     });
     socket.on("userMsg",(data) => {
       setUserMsg(data)
+    })
+    socket.on("opponentMsg",(msg) => {
+      setOpponentMsg(msg)
+      console.log(msg)
     })
 
     return () => {
@@ -61,14 +62,15 @@ export function useSocket(handleOppoMove) {
     turn,
     socket,
     userMsg,
+    opponentMsg,
     setTurn,
     setUserMove,
     setUserMsg,
     setUserName,
     //setOpponentMove,
-    sendMsg:() => sendMsg(userMsg,socket),
     findMatch: () => findMatch(matchQueued, setmatchQueued,socket,userName),
     sendMove: (move) => sendMove(opponentId, move,socket),
+    sendMsg:(userMsg) => sendMsg(opponentId,userMsg,socket)
   };
 }
 
@@ -79,6 +81,14 @@ export function sendMove(opponentId, move,socket) {
   };
   socket.emit("sendMove", data);
   console.log("Move Sent : ", data.move);
+}
+export function sendMsg(opponentId, msg,socket) {
+  const data = {
+    opponentId: opponentId,
+    msg: msg,
+  };
+  socket.emit("sendMsg",data)
+
 }
 
 export function findMatch(matchQueued, setmatchQueued,socket,name) {
