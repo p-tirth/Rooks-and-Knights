@@ -30,7 +30,7 @@ export default function Home() {
           </div>
 
           {/* Additional Chess Content */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-1">
             <div className="bg-gray-800 shadow-md p-6 rounded-lg">
               <h2 className="text-xl font-bold mb-4">Learn Chess Strategies</h2>
               <p className="text-gray-300">
