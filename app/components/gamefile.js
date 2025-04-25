@@ -85,7 +85,7 @@ const Gamefile = () => {
               <div className="bg-gray-700/50 rounded-xl w-full max-w-md h-80 sm:h-96 flex items-center justify-center p-6">
                 <div className="text-center">
                   <div className="text-2xl font-semibold mb-4">Welcome to Rooks and Knights</div>
-                  <p className="text-gray-300">Enter your name and click "Find Match" to start playing.</p>
+                  <p className="text-gray-300">Enter your name and click &quot;Find Match&quot; to start playing.</p>
                 </div>
               </div>
             )}
@@ -135,7 +135,7 @@ const Gamefile = () => {
                 </span> : 
                 <span className="inline-flex items-center bg-red-900/40 text-red-400 px-2 py-1 rounded-full text-xs mt-1">
                   <span className="w-2 h-2 bg-red-400 rounded-full mr-1"></span>
-                  Opponent's turn
+                  Opponent&apos;s turn
                 </span>
               }
             </div>
