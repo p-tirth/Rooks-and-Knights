@@ -52,7 +52,7 @@ const Gamefile = () => {
   return (
     <div className="flex flex-col items-center w-full">
       {/* Game card container with shadow and rounded corners */}
-      <div className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden w-full max-w-6xl transition-all duration-300 transform hover:shadow-blue-500/20">
+      <div className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden w-full max-w-6xl transition-all duration-300  hover:shadow-blue-500/20">
         {/* Game header area */}
         <div className="p-4 md:p-6 bg-gradient-to-r from-blue-900 to-purple-900 border-b border-gray-700">
           <h2 className="text-2xl md:text-3xl font-bold text-white">
