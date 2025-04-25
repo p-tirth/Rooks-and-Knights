@@ -10,9 +10,9 @@ class SocketService {
   // Get the socket instance, creating it if it doesn't exist
   getSocket() {
     if (!this.socket) {
-    //   this.socket = io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com");
+      this.socket = io.connect("https://rooks-and-knights-socket-server-uw5a.onrender.com");
       // For local development:
-      this.socket = io.connect("http://localhost:3001/");
+      // this.socket = io.connect("http://localhost:3001/");
     }
     return this.socket;
   }
