@@ -1,20 +1,27 @@
 "use client";
-import React, { useState } from "react";
-import Chessboard from "chessboardjsx";
-import { Chess } from "chess.js";
+import React, { useEffect, useState } from "react";
 import { useSocket } from "./socket";
-import Image from "next/image";
-import Loading from "./loading";
+import ChessboardComponent from "./ChessboardComponent";
+import GameStatus from "./GameStatus";
+import ChatComponent from "./ChatComponent";
+import MatchFinder from "./MatchFinder";
 
 const Gamefile = () => {
-  const handleOppoMove = (move) => {
-    if (chess.move(move)) {
-      setFen(chess.fen());
-    } else {
-      console.log("Invalid Move");
-    }
-    checkGameStatus(chess, color, turn);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Calculate chessboard size based on screen width
+  const getBoardSize = () => {
+    if (windowWidth < 640) return Math.min(windowWidth - 40, 320); // Small screens
+    if (windowWidth < 1024) return 400; // Medium screens
+    return 480; // Large screens
   };
+
   const {
     opponentId,
     opponentName,
@@ -34,136 +41,109 @@ const Gamefile = () => {
     setUserName,
     findMatch,
     sendMove,
-  } = useSocket(handleOppoMove);
-
-  const [chess] = useState(
-    new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-  );
-  const [fen, setFen] = useState(chess.fen());
-
-  const checkGameStatus = (chess, color) => {
-    // check all game end conditions
-    if (chess.isCheckmate()) {
-      alert("Checkmate");
-      if (turn) {
-        alert("You Win");
-      } else {
-        alert("You Loose");
-      }
-    } else if (chess.isDraw()) {
-      alert("Stalemate");
-    } else if (chess.inCheck()) {
-      alert("Check");
+  } = useSocket((move) => {
+    if (chessboardRef.current) {
+      chessboardRef.current.handleOpponentMove(move);
     }
-  };
+  });
 
-  const handleMove = (move, socket) => {
-    try {
-      const result = chess.move(move);
-      if (result === null) {
-        throw new Error("Invalid Move");
-      } else {
-        setFen(chess.fen());
-      }
-      console.log("move handled");
-      setUserMove(move);
-      setTurn(false);
-      sendMove(move, socket);
-      checkGameStatus(chess, color);
-    } catch (error) {
-      alert("Invalid Move");
-    }
-  };
+  const chessboardRef = React.useRef(null);
 
-  // const RandomMove = () => {
-  //   const moves = chess.moves();
-  //   if (moves.length > 0) {
-  //     const computerMove = moves[Math.floor(Math.random() * moves.length)];
-  //     console.log("computer move : ", computerMove);
-  //     chess.move(computerMove);
-  //     setFen(chess.fen());
-  //   }
-  // };
-  // const Chessboard = React.lazy(() => import("chessboardjsx"));
   return (
-    <div className="flex-center bg-gray-900 ">
-      {opponentName && (
-        <div>
-          <div className="font-mono text-xl p-5 text-white">
-            You are playing against : {opponentName}
-          </div>
-          <div
-            className={`${
-              turn ? "bg-green-500 text-white" : "bg-red-500 text-white "
-            }`}
-          >
-            turn
-          </div>
-        </div>
-      )}
-      <div className="flex flex-wrap justify-evenly">
-        <div>
-          {board && (
-            <Chessboard
-              width={400}
-              position={fen}
-              onDrop={(move) =>
-                handleMove({
-                  from: move.sourceSquare,
-                  to: move.targetSquare,
-                  promotion: "q",
-                })
-              }
-              orientation={color}
-              dropOffBoard={"snapback"}
-              draggable={turn}
-            />
+    <div className="flex flex-col items-center w-full">
+      {/* Game card container with shadow and rounded corners */}
+      <div className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden w-full max-w-6xl transition-all duration-300 transform hover:shadow-blue-500/20">
+        {/* Game header area */}
+        <div className="p-4 md:p-6 bg-gradient-to-r from-blue-900 to-purple-900 border-b border-gray-700">
+          <h2 className="text-2xl md:text-3xl font-bold text-white">
+            {matchFound ? "Game in Progress" : "Online Chess"}
+          </h2>
+          
+          {/* Game Status Component */}
+          {opponentName && (
+            <GameStatus opponentName={opponentName} turn={turn} />
           )}
         </div>
-        <div className="bg-gray-800">
-          {opponentMsg}
+
+        {/* Main Game Area - Responsive Layout */}
+        <div className="flex flex-col lg:flex-row w-full items-center lg:items-start justify-center p-4 md:p-6 gap-6">
+          {/* Chess Board Section */}
+          <div className="flex justify-center w-full lg:w-auto">
+            {board ? (
+              <div className="transition-all duration-300">
+                <ChessboardComponent
+                  ref={chessboardRef}
+                  color={color}
+                  turn={turn}
+                  sendMove={sendMove}
+                  setTurn={setTurn}
+                  setUserMove={setUserMove}
+                  boardSize={getBoardSize()}
+                />
+              </div>
+            ) : (
+              <div className="bg-gray-700/50 rounded-xl w-full max-w-md h-80 sm:h-96 flex items-center justify-center p-6">
+                <div className="text-center">
+                  <div className="text-2xl font-semibold mb-4">Welcome to Rooks and Knights</div>
+                  <p className="text-gray-300">Enter your name and click "Find Match" to start playing.</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Chat and Game Info Section */}
+          <div className="w-full lg:w-80 flex flex-col space-y-4">
+            {color ? (
+              <div className="h-full flex flex-col">
+                <ChatComponent
+                  userMsg={userMsg}
+                  opponentMsg={opponentMsg}
+                  setUserMsg={setUserMsg}
+                  sendMsg={sendMsg}
+                  matchQueued={matchQueued}
+                  color={color}
+                />
+              </div>
+            ) : (
+              <div className="bg-gray-700/30 rounded-xl p-4 h-full min-h-[240px] flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-lg font-medium mb-2">Chat will appear during the game</div>
+                  <p className="text-gray-400 text-sm">Connect with an opponent first</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Match Finding Area */}
+        <div className="p-4 md:p-6 bg-gray-900/50">
+          {!color ? (
+            <MatchFinder
+              userName={userName}
+              setUserName={setUserName}
+              findMatch={() => findMatch(socket)}
+              matchQueued={matchQueued}
+              matchFound={matchFound}
+            />
+          ) : (
+            <div className="text-center py-2 text-sm text-blue-300">
+              <p>You are playing as {color}</p>
+              {turn ? 
+                <span className="inline-flex items-center bg-green-900/40 text-green-400 px-2 py-1 rounded-full text-xs mt-1">
+                  <span className="w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse"></span>
+                  Your turn
+                </span> : 
+                <span className="inline-flex items-center bg-red-900/40 text-red-400 px-2 py-1 rounded-full text-xs mt-1">
+                  <span className="w-2 h-2 bg-red-400 rounded-full mr-1"></span>
+                  Opponent's turn
+                </span>
+              }
+            </div>
+          )}
         </div>
       </div>
-      <div className="flex items-center justify-between p-4 border-t border-gray-200">
-        <input
-          type="text"
-          placeholder={`${
-            !matchQueued ? "Enter Your Name" : "Enter Your Message"
-          }`}
-          className="w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-          value={`${!matchQueued ? userName : userMsg}`}
-          onChange={(e) =>
-            !matchQueued
-              ? setUserName(e.target.value)
-              : setUserMsg(e.target.value)
-          }
-        />
-        <button
-          className={`ml-2 px-4 py-2 rounded-md focus:outline-none ${
-            color
-              ? "bg-green-500 text-white"
-              : "bg-red-500 text-white hover:bg-red-600 focus:bg-red-600"
-          }`}
-          onClick={
-            color
-              ? () => {
-                  sendMsg(userMsg);
-                }
-              : () => {
-                  findMatch(socket);
-                }
-          }
-        >
-          {color ? "Send" : "Find Match"}
-        </button>
-      </div>
-      {matchQueued && !matchFound && (
-        <div className="w-full flex flex-col items-center">
-          <Loading />
-          <div className="text-white p-3">Searchig opponent for {userName}</div>
-        </div>
-      )}
     </div>
   );
 };
+
 export default Gamefile;
