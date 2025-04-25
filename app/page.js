@@ -184,7 +184,7 @@ export default function Home() {
               <div className="mb-8 md:mb-0 md:mr-8">
                 <h2 className="text-3xl font-bold mb-4">Ready to Play Chess?</h2>
                 <p className="text-xl text-gray-300 max-w-2xl">
-                  Join our online chess platform now and challenge players from around the world. It's free and no registration required!
+                  Join our online chess platform now and challenge players from around the world. It&apos;s free and no registration required!
                 </p>
               </div>
               <div className="flex-shrink-0">

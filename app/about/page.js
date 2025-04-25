@@ -154,14 +154,14 @@ export default function AboutPage() {
               <div className="md:col-span-2 space-y-4">
                 <h2 className="text-3xl font-bold">About the Developer</h2>
                 <p className="text-gray-300 text-lg">
-                  I'm a passionate full-stack developer with expertise in building interactive 
+                  I&apos;m a passionate full-stack developer with expertise in building interactive 
                   web applications. Rooks and Knights is one of my projects that demonstrates 
                   my capabilities in creating responsive, real-time applications with modern 
                   web technologies.
                 </p>
                 <p className="text-gray-300 text-lg">
                   I enjoy tackling complex problems and creating elegant, user-friendly 
-                  solutions. Feel free to reach out if you'd like to collaborate or discuss 
+                  solutions. Feel free to reach out if you&apos;d like to collaborate or discuss 
                   potential projects.
                 </p>
                 <div className="pt-4 flex space-x-4">
