@@ -37,11 +37,6 @@ export default function Navbar() {
                   About
                 </p>
               </Link>
-              <Link href="/contact">
-                <p className="text-gray-300 hover:text-white cursor-pointer">
-                  Contact
-                </p>
-              </Link>
             </div>
           </div>
           <div className="flex justify-center items-center">
@@ -89,9 +84,6 @@ export default function Navbar() {
           </Link>
           <Link href="/about">
             <p className="block text-gray-300 hover:text-white mt-2">About</p>
-          </Link>
-          <Link href="/contact">
-            <p className="block text-gray-300 hover:text-white mt-2">Contact</p>
           </Link>
         </div>
       )}
